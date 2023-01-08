@@ -1,11 +1,15 @@
 {
   "name": "severino",
-  "version": "1.0.0",
-  "description": "WebScraping para captura de informações do REDS",
-  "main": "index.js",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "author": "Junior Martins <amjr.box@gmail.com>",
-  "license": "ISC"
+  "devDependencies": {
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0"
+  }
 }

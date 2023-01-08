@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "rat": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/juniormartinxo/severino#readme",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "firefox-profile": "^4.2.2",
     "selenium-webdriver": "^4.7.1"
   }

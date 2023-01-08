@@ -4,8 +4,16 @@ const util = require('util')
 const fs = require('fs')
 const path = require('path')
 const copyFilePromise = util.promisify(fs.copyFile)
-
+require('dotenv').config()
 ;(async function index() {
+  const sids_user = process.env.SIDS_USER ?? ''
+  const sids_password = process.env.SIDS_PASSWORD ?? ''
+
+  if (sids_user === '' || sids_password === '') {
+    console.log('SIDS_USER e SIDS_PASSWORD não foi definido no arquivo .env')
+    return
+  }
+
   const delay = 3000
 
   const options = new firefox.Options()
@@ -22,11 +30,11 @@ const copyFilePromise = util.promisify(fs.copyFile)
 
   const inputLogin = await driver
     .findElement(By.name('josso_username'))
-    .sendKeys('PM1211663' + Key.TAB)
+    .sendKeys(process.env.SIDS_USER + Key.TAB)
 
   const inputPassword = await driver
     .findElement(By.name('josso_password'))
-    .sendKeys('2020Robin' + Key.ENTER)
+    .sendKeys(process.env.SIDS_PASSWORD + Key.ENTER)
 
   await driver.sleep(delay)
 

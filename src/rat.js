@@ -1,20 +1,20 @@
-import rat from './src/rat.js'
-const { By, Builder, Key, Select } = require('selenium-webdriver')
-const firefox = require('selenium-webdriver/firefox')
-const util = require('util')
-const fs = require('fs')
-const path = require('path')
+import { By, Builder, Key, Select } from 'selenium-webdriver'
+import firefox from 'selenium-webdriver/firefox.js'
+import util from 'util'
+import fs from 'fs'
+import path from 'path'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+
 const copyFilePromise = util.promisify(fs.copyFile)
-require('dotenv').config()
-;(async function index() {
+
+async function rat() {
   const sids_usr = process.env.SIDS_USR ?? ''
   const sids_psw = process.env.SIDS_PSW ?? ''
 
-  rat()
   if (sids_usr === '' || sids_psw === '') {
-    console.log(
-      'As variáveis SIDS_USR e SIDS_PSW não foram definidas no arquivo .env',
-    )
+    console.log('SIDS_USER e SIDS_PASSWORD não foi definido no arquivo .env')
     return
   }
 
@@ -32,9 +32,13 @@ require('dotenv').config()
 
   await driver.get(url_login)
 
+  await driver.sleep(delay)
+
   const inputLogin = await driver
     .findElement(By.name('josso_username'))
     .sendKeys(sids_usr + Key.TAB)
+
+  await driver.sleep(delay)
 
   const inputPassword = await driver
     .findElement(By.name('josso_password'))
@@ -65,14 +69,13 @@ require('dotenv').config()
     const selectTipoRelatorio = await driver.findElement(
       By.name('tipoRelatorio'),
     )
-    const objSelectTipoRelatorio = new Select(selectTipoRelatorio)
-    const optionListTipoRelatorio = await objSelectTipoRelatorio.getOptions()
-    const selectedOptionListTipoRelatorio =
-      await objSelectTipoRelatorio.getAllSelectedOptions()
+    const select = new Select(selectTipoRelatorio)
+    const optionList = await select.getOptions()
+    const selectedOptionList = await select.getAllSelectedOptions()
 
     await driver.sleep(delay)
 
-    await objSelectTipoRelatorio.selectByValue('11')
+    await select.selectByValue('11')
 
     await driver.sleep(delay)
 
@@ -80,7 +83,7 @@ require('dotenv').config()
       .findElement(By.name('dataInicialFato'))
       .sendKeys('01/01/2023' + Key.TAB)
 
-    await driver.sleep(2000)
+    await driver.sleep(delay)
 
     const inputDataFinalFato = await driver
       .findElement(By.name('dataFinalFato'))
@@ -98,45 +101,42 @@ require('dotenv').config()
 
     await driver.sleep(delay)
 
-    const selectIdOrgaoSelecionado = await driver.findElement(
-      By.name('id_orgao_selecionado'),
-    )
-    const objSelectIdOrgaoSelecionado = new Select(selectIdOrgaoSelecionado)
-    /*
-    const optionListIdOrgaoSelecionado =
-    const optionListIdOrgaoSelecionado =
-      await objSelectIdOrgaoSelecionado.getOptions()
-    const selectedOptionListIdOrgaoSelecionado =
-      await objSelectIdOrgaoSelecionado.getAllSelectedOptions()
-      */
-
-    await driver.sleep(delay)
-
-    await objSelectIdOrgaoSelecionado.selectByValue('0')
-
-    await driver.sleep(delay)
-
     const inputNomMunicipioResp = await driver.findElement(
       By.name('nom_municipio_resp'),
     )
 
-    inputNomMunicipioResp.click()
+    await inputNomMunicipioResp.click()
 
     await driver.sleep(delay)
 
-    inputNomMunicipioResp.sendKeys(city + Key.ENTER)
+    await inputNomMunicipioResp.sendKeys(city + Key.ENTER)
+
+    await driver.sleep(delay)
+
+    const objSelectOrgaoUnidDestino = await driver.findElement(
+      By.name('id_orgao_unid_destino'),
+    )
+    const selectOrgaoUnidDestino = new Select(objSelectOrgaoUnidDestino)
+    const optionListOrgaoUnidDestino = await selectOrgaoUnidDestino.getOptions()
+    const selectedOptionListOrgaoUnidDestino =
+      await selectOrgaoUnidDestino.getAllSelectedOptions()
+
+    await driver.sleep(delay)
+
+    /*
+
+    await selectOrgaoUnidDestino.sendKeys('POLICIA MILITAR' + Key.ENTER)
+
+    await driver.sleep(delay)
+    */
+
+    await selectOrgaoUnidDestino.selectByValue('0')
 
     await driver.sleep(delay)
 
     const selectUnidResponsavel = await driver
       .findElement(By.name('selectUnidResponsavel'))
       .click()
-
-    const selectUnidArea = await driver
-      .findElement(By.name('selectUnidArea'))
-      .click()
-
-    await driver.sleep(delay)
 
     const buttonConsultar = await driver
       .findElement(By.name('consultar'))
@@ -146,13 +146,13 @@ require('dotenv').config()
 
     driver.findElement(By.name('CSV')).then(
       async element => {
-        element.click()
+        await element.click()
 
         await driver.sleep(5000)
 
         fs.renameSync(
           'D:\\home\\Downloads\\relatorio.csv',
-          'D:\\apps\\severino-extract\\reports\\csv\\' + city + '.csv',
+          'D:\\apps\\severino\\reports\\csv\\' + city + '.csv',
           err => {
             if (err) {
               console.error(err)
@@ -172,4 +172,6 @@ require('dotenv').config()
   }
 
   await driver.quit()
-})()
+}
+
+export default rat

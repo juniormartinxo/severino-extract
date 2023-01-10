@@ -1,17 +1,15 @@
-const { By, Builder, Key, Select } = require('selenium-webdriver')
-const firefox = require('selenium-webdriver/firefox')
-const util = require('util')
-const fs = require('fs')
-const path = require('path')
-const copyFilePromise = util.promisify(fs.copyFile)
-require('dotenv').config()
-;(async function index() {
-  const sids_user = process.env.SIDS_USER ?? ''
-  const sids_password = process.env.SIDS_PASSWORD ?? ''
+import { By, Builder, Key, Select } from 'selenium-webdriver'
+import firefox from 'selenium-webdriver/firefox.js'
+import * as dotenv from 'dotenv'
+import getCsv from './src/getCsv.js'
 
-  if (sids_user === '' || sids_password === '') {
+dotenv.config()
+;(async function index() {
+  const sids_usr = process.env.SIDS_USR ?? ''
+  const sids_psw = process.env.SIDS_PSW ?? ''
+
+  if (sids_usr === '' || sids_psw === '') {
     console.log('SIDS_USER e SIDS_PASSWORD não foi definido no arquivo .env')
-    return
   }
 
   const delay = 3000
@@ -23,18 +21,23 @@ require('dotenv').config()
     .forBrowser('firefox')
     .build()
 
-  const url_login =
-    'https://web.sids.mg.gov.br/josso/signon/login.do?josso_cmd=login_optional&josso_back_to=http://web.sids.mg.gov.br/reds/josso_security_check&josso_partnerapp_id=reds'
+  const sids_url_login = process.env.SIDS_URL_LOGIN ?? ''
 
-  await driver.get(url_login)
+  if (sids_url_login === '') {
+    console.log('😒 A url do login não foi definida')
+  }
+
+  await driver.get(sids_url_login)
 
   const inputLogin = await driver
     .findElement(By.name('josso_username'))
-    .sendKeys(process.env.SIDS_USER + Key.TAB)
+    .sendKeys(sids_usr + Key.TAB)
 
   const inputPassword = await driver
     .findElement(By.name('josso_password'))
-    .sendKeys(process.env.SIDS_PASSWORD + Key.ENTER)
+    .sendKeys(sids_psw + Key.ENTER)
+
+  const path_original_file_csv = process.env.PATH_ORIGINAL_FILE_CSV ?? ''
 
   await driver.sleep(delay)
 
@@ -49,94 +52,7 @@ require('dotenv').config()
   ]
 
   for (const city of cities) {
-    console.log(city)
-
-    const url_report =
-      'https://web.sids.mg.gov.br/reds/consultas/consultaAvancada.do?operation=loadForSearch&tela=CA'
-
-    await driver.get(url_report)
-
-    await driver.sleep(delay)
-
-    const selectTipoRelatorio = await driver.findElement(
-      By.name('tipoRelatorio'),
-    )
-    const select = new Select(selectTipoRelatorio)
-    const optionList = await select.getOptions()
-    const selectedOptionList = await select.getAllSelectedOptions()
-
-    await driver.sleep(delay)
-
-    await select.selectByValue('11')
-
-    await driver.sleep(delay)
-
-    const inputDataInicialFato = await driver
-      .findElement(By.name('dataInicialFato'))
-      .sendKeys('01/01/2023' + Key.TAB)
-    const inputDataFinalFato = await driver
-      .findElement(By.name('dataFinalFato'))
-      .sendKeys('01/01/2023' + Key.TAB)
-
-    await driver.sleep(delay)
-
-    const legend = await driver
-      .findElement(
-        By.xpath(
-          "//legend[contains(text(),'Unidade Responsável pelo Registro / Unidade de Área')]",
-        ),
-      )
-      .click()
-
-    await driver.sleep(delay)
-
-    const inputNomMunicipioResp = await driver.findElement(
-      By.name('nom_municipio_resp'),
-    )
-
-    inputNomMunicipioResp.click()
-
-    await driver.sleep(delay)
-
-    inputNomMunicipioResp.sendKeys(city + Key.ENTER)
-
-    await driver.sleep(delay)
-
-    const selectUnidResponsavel = await driver
-      .findElement(By.name('selectUnidResponsavel'))
-      .click()
-
-    const buttonConsultar = await driver
-      .findElement(By.name('consultar'))
-      .click()
-
-    await driver.sleep(delay)
-
-    driver.findElement(By.name('CSV')).then(
-      async element => {
-        element.click()
-
-        await driver.sleep(5000)
-
-        fs.renameSync(
-          'D:\\home\\Downloads\\relatorio.csv',
-          'D:\\apps\\severino\\reports\\csv\\' + city + '.csv',
-          err => {
-            if (err) {
-              console.error(err)
-              return
-            }
-
-            console.log('Arquivo movido com sucesso')
-          },
-        )
-      },
-      err => {
-        console.log(`${city} não possui registros`)
-      },
-    )
-
-    await driver.sleep(delay)
+    await getCsv(city, driver, options, delay, path_original_file_csv)
   }
 
   await driver.quit()

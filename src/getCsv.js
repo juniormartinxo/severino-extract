@@ -22,14 +22,16 @@ const getCsv = async (city, driver, options, delay, path_original_file_csv) => {
 
   await driver.sleep(delay)
 
-  const selectTipoRelatorio = await driver.findElement(By.name('tipoRelatorio'))
-  const select = new Select(selectTipoRelatorio)
-  const optionList = await select.getOptions()
-  const selectedOptionList = await select.getAllSelectedOptions()
+  const objSelectTipoRelatorio = await driver.findElement(
+    By.name('tipoRelatorio'),
+  )
+  const selectTipoRelatorio = new Select(objSelectTipoRelatorio)
+  //const optionList = await select.getOptions()
+  //const selectedOptionList = await select.getAllSelectedOptions()
 
   await driver.sleep(delay)
 
-  await select.selectByValue('11')
+  await selectTipoRelatorio.selectByValue('11')
 
   await driver.sleep(delay)
 
@@ -38,6 +40,8 @@ const getCsv = async (city, driver, options, delay, path_original_file_csv) => {
   )
 
   inputDataInicialFato.sendKeys('01/01/2023' + Key.TAB)
+
+  await driver.sleep(delay)
 
   const inputDataFinalFato = await driver.findElement(By.name('dataFinalFato'))
 
@@ -52,6 +56,19 @@ const getCsv = async (city, driver, options, delay, path_original_file_csv) => {
   )
 
   legend.click()
+
+  await driver.sleep(delay)
+
+  const objSelectOrgaoUnidDestino = await driver.findElement(
+    By.name('id_orgao_unid_destino'),
+  )
+  const selectOrgaoUnidDestino = new Select(objSelectOrgaoUnidDestino)
+
+  selectOrgaoUnidDestino.click()
+
+  await driver.sleep(delay)
+
+  await selectOrgaoUnidDestino.selectByValue('0')
 
   await driver.sleep(delay)
 

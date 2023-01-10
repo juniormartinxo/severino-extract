@@ -9,7 +9,7 @@ dotenv.config()
 
 const copyFilePromise = util.promisify(fs.copyFile)
 
-export default function rat() {
+async function rat() {
   const sids_usr = process.env.SIDS_USR ?? ''
   const sids_psw = process.env.SIDS_PSW ?? ''
 
@@ -32,9 +32,13 @@ export default function rat() {
 
   await driver.get(url_login)
 
+  await driver.sleep(delay)
+
   const inputLogin = await driver
     .findElement(By.name('josso_username'))
     .sendKeys(sids_usr + Key.TAB)
+
+  await driver.sleep(delay)
 
   const inputPassword = await driver
     .findElement(By.name('josso_password'))
@@ -78,6 +82,9 @@ export default function rat() {
     const inputDataInicialFato = await driver
       .findElement(By.name('dataInicialFato'))
       .sendKeys('01/01/2023' + Key.TAB)
+
+    await driver.sleep(delay)
+
     const inputDataFinalFato = await driver
       .findElement(By.name('dataFinalFato'))
       .sendKeys('01/01/2023' + Key.TAB)
@@ -98,11 +105,32 @@ export default function rat() {
       By.name('nom_municipio_resp'),
     )
 
-    inputNomMunicipioResp.click()
+    await inputNomMunicipioResp.click()
 
     await driver.sleep(delay)
 
-    inputNomMunicipioResp.sendKeys(city + Key.ENTER)
+    await inputNomMunicipioResp.sendKeys(city + Key.ENTER)
+
+    await driver.sleep(delay)
+
+    const objSelectOrgaoUnidDestino = await driver.findElement(
+      By.name('id_orgao_unid_destino'),
+    )
+    const selectOrgaoUnidDestino = new Select(objSelectOrgaoUnidDestino)
+    const optionListOrgaoUnidDestino = await selectOrgaoUnidDestino.getOptions()
+    const selectedOptionListOrgaoUnidDestino =
+      await selectOrgaoUnidDestino.getAllSelectedOptions()
+
+    await driver.sleep(delay)
+
+    /*
+
+    await selectOrgaoUnidDestino.sendKeys('POLICIA MILITAR' + Key.ENTER)
+
+    await driver.sleep(delay)
+    */
+
+    await selectOrgaoUnidDestino.selectByValue('0')
 
     await driver.sleep(delay)
 
@@ -118,7 +146,7 @@ export default function rat() {
 
     driver.findElement(By.name('CSV')).then(
       async element => {
-        element.click()
+        await element.click()
 
         await driver.sleep(5000)
 
@@ -145,3 +173,5 @@ export default function rat() {
 
   await driver.quit()
 }
+
+export default rat

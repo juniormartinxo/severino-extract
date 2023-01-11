@@ -1,16 +1,19 @@
-import rat from './src/rat.js'
-const { By, Builder, Key, Select } = require('selenium-webdriver')
-const firefox = require('selenium-webdriver/firefox')
-const util = require('util')
-const fs = require('fs')
-const path = require('path')
+//import rat from './src/rat.js'
+import { By, Builder, Key, Select } from 'selenium-webdriver'
+import * as firefox from 'selenium-webdriver/firefox.js'
+import util from 'util'
+import fs from 'fs'
+import path from 'path'
+import * as dotenv from 'dotenv'
+
 const copyFilePromise = util.promisify(fs.copyFile)
-require('dotenv').config()
+
+dotenv.config()
 ;(async function index() {
   const sids_usr = process.env.SIDS_USR ?? ''
   const sids_psw = process.env.SIDS_PSW ?? ''
 
-  rat()
+  //rat()
   if (sids_usr === '' || sids_psw === '') {
     console.log(
       'As variáveis SIDS_USR e SIDS_PSW não foram definidas no arquivo .env',
@@ -103,12 +106,12 @@ require('dotenv').config()
     )
     const objSelectIdOrgaoSelecionado = new Select(selectIdOrgaoSelecionado)
     /*
-    const optionListIdOrgaoSelecionado =
-    const optionListIdOrgaoSelecionado =
-      await objSelectIdOrgaoSelecionado.getOptions()
-    const selectedOptionListIdOrgaoSelecionado =
-      await objSelectIdOrgaoSelecionado.getAllSelectedOptions()
-      */
+      const optionListIdOrgaoSelecionado =
+      const optionListIdOrgaoSelecionado =
+        await objSelectIdOrgaoSelecionado.getOptions()
+      const selectedOptionListIdOrgaoSelecionado =
+        await objSelectIdOrgaoSelecionado.getAllSelectedOptions()
+        */
 
     await driver.sleep(delay)
 
@@ -144,28 +147,30 @@ require('dotenv').config()
 
     await driver.sleep(delay)
 
-    driver.findElement(By.name('CSV')).then(
-      async element => {
-        element.click()
+    driver.findElement(
+      By.name('CSV').then(
+        async element => {
+          element.click()
 
-        await driver.sleep(5000)
+          await driver.sleep(5000)
 
-        fs.renameSync(
-          'D:\\home\\Downloads\\relatorio.csv',
-          'D:\\apps\\severino-extract\\reports\\csv\\' + city + '.csv',
-          err => {
-            if (err) {
-              console.error(err)
-              return
-            }
+          fs.renameSync(
+            'D:\\home\\Downloads\\relatorio.csv',
+            'D:\\apps\\severino-extract\\reports\\csv\\' + city + '.csv',
+            err => {
+              if (err) {
+                console.error(err)
+                return
+              }
 
-            console.log('Arquivo movido com sucesso')
-          },
-        )
-      },
-      err => {
-        console.log(`${city} não possui registros`)
-      },
+              console.log('Arquivo movido com sucesso')
+            },
+          )
+        },
+        err => {
+          console.log(`${city} não possui registros`)
+        },
+      ),
     )
 
     await driver.sleep(delay)

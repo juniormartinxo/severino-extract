@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "rat": "node index.js"
+    "rat": "node e-rat.js",
+    "csv": "node src/get-csv.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/juniormartinxo/severino#readme",
   "dependencies": {
+    "csvtojson": "^2.0.10",
     "dotenv": "^16.0.3",
     "firefox-profile": "^4.2.2",
+    "moment": "^2.29.4",
     "selenium-webdriver": "^4.7.1"
   }
 }

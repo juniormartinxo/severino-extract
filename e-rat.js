@@ -45,7 +45,7 @@ async function e_rat() {
 
   await driver.sleep(delay)
 
-  const startDate = moment('2023-01-01')
+  const startDate = moment('2023-01-12')
   const endDate = moment()
   const dateRange = []
 

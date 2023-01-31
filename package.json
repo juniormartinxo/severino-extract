@@ -6,7 +6,8 @@
   "scripts": {
     "rat": "node e-rat.js",
     "csv": "node e-csv.js",
-    "doc": "node e-doc.js"
+    "doc": "node e-doc.js",
+    "i": "node i.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/juniormartinxo/severino#readme",
   "dependencies": {
+    "axios": "^1.2.6",
     "csv-parser": "^3.0.0",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.3",

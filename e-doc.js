@@ -28,19 +28,19 @@ async function e_doc() {
     return
   }
 
-  const url_login =
-    'https://web.sids.mg.gov.br/josso/signon/login.do?josso_cmd=login_optional&josso_back_to=http://web.sids.mg.gov.br/reds/josso_security_check&josso_partnerapp_id=reds'
+  //const url_login = 'https://web.sids.mg.gov.br/josso/signon/login.do?josso_cmd=login_optional&josso_back_to=http://web.sids.mg.gov.br/reds/josso_security_check&josso_partnerapp_id=reds'
+  const url_login = 'https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=9a598768-71a5-4dde-a844-c3d14ac95628&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL'
 
   await driver.get(url_login)
 
   const inputLogin = await driver
-    .findElement(By.name('josso_username'))
+    .findElement(By.name('usernameUserInput'))
     .sendKeys(sids_usr + Key.TAB)
 
   await driver.sleep(delay)
 
   const inputPassword = await driver
-    .findElement(By.name('josso_password'))
+    .findElement(By.name('password'))
     .sendKeys(sids_psw + Key.ENTER)
 
   await driver.sleep(delay)

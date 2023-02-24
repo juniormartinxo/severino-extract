@@ -8,6 +8,12 @@ const copyFilePromise = util.promisify(fs.copyFile)
 
 require('dotenv').config()
 
+const data = JSON.parse(fs.readFileSync('rat.json', 'utf8'));
+
+console.log(data.date);
+
+exit();
+
 async function rat(driver, delay, date, dateFileName) {
   const cities = [
     'ARAGUARI',
@@ -22,8 +28,7 @@ async function rat(driver, delay, date, dateFileName) {
   for (const city of cities) {
     console.log(city)
 
-    const url_report =
-      'https://web.sids.mg.gov.br/reds/consultas/consultaAvancada.do?operation=loadForSearch&tela=CA'
+    const url_report = process.env.SIDS_URL_REPORT_CSV      
 
     await driver.get(url_report)
 

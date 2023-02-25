@@ -1,6 +1,6 @@
 const moment = require('moment')
-const rat = require('./src/rat.js')
-const logar = require('./src/logar.js')
+const rat = require('./src/actions/rat.js')
+const logar = require('./src/actions/logar.js')
 const { By, Builder, Key, Select } = require('selenium-webdriver')
 const firefox = require('selenium-webdriver/firefox')
 
@@ -28,24 +28,24 @@ async function e_rat() {
     return
   }
 
-  const url_login =
-    'https://web.sids.mg.gov.br/josso/signon/login.do?josso_cmd=login_optional&josso_back_to=http://web.sids.mg.gov.br/reds/josso_security_check&josso_partnerapp_id=reds'
+  const url_login = process.env.SIDS_URL_LOGIN
+
 
   await driver.get(url_login)
 
   const inputLogin = await driver
-    .findElement(By.name('josso_username'))
+    .findElement(By.name(process.env.SIDS_INPUT_USER_LOGIN))
     .sendKeys(sids_usr + Key.TAB)
 
   await driver.sleep(delay)
 
   const inputPassword = await driver
-    .findElement(By.name('josso_password'))
+    .findElement(By.name(process.env.SIDS_INPUT_USER_PSW))
     .sendKeys(sids_psw + Key.ENTER)
 
   await driver.sleep(delay)
 
-  const startDate = moment('2023-01-12')
+  const startDate = moment('2023-01-16')
   const endDate = moment()
   const dateRange = []
 

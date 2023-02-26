@@ -10,10 +10,6 @@ require('dotenv').config()
 
 const data = JSON.parse(fs.readFileSync('rat.json', 'utf8'));
 
-console.log(data.date);
-
-exit();
-
 async function rat(driver, delay, date, dateFileName) {
   const cities = [
     'ARAGUARI',

@@ -29,8 +29,7 @@ async function e_doc() {
     return
   }
 
-  const url_login =
-    'https://web.sids.mg.gov.br/josso/signon/login.do?josso_cmd=login_optional&josso_back_to=http://web.sids.mg.gov.br/reds/josso_security_check&josso_partnerapp_id=reds'
+  const url_login = process.env.SIDS_URL_LOGIN
 
   await driver.get(url_login)
 
